@@ -1,0 +1,5 @@
+{
+  "name": "Textlytic: Text Formatter & Word Counter",
+  "description": "A versatile tool to format text with hyphens and commas, and to count words from any web article by providing its URL. It merges the functionality of a text utility with a web content analysis tool in a modern React interface.",
+  "requestFramePermissions": []
+}

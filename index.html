@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Textlytic: Text Formatter & Word Counter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Dancing+Script:wght@600&family=Engagement&family=Galada&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'sans-serif'],
+              galada: ['Galada', 'cursive'],
+              'dancing-script': ['"Dancing Script"', 'cursive'],
+              charm: ['Charm', 'cursive'],
+              engagement: ['Engagement', 'cursive'],
+            },
+            colors: {
+              primary: {
+                DEFAULT: '#2acab7',
+                dark: '#00a794',
+              },
+              light: {
+                bg: '#f7f9fc',
+                card: '#ffffff',
+                text: '#1f2937',
+                muted: '#6b7280',
+              },
+              dark: {
+                bg: '#0e141b',
+                card: '#1b2530',
+                text: '#e9eef3',
+                muted: '#98a2b3',
+              }
+            },
+            keyframes: {
+              'fade-in-up': {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'toast-in': {
+                '0%': { opacity: '0', transform: 'translateY(20px) scale(0.9)' },
+                '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+              },
+              'toast-out': {
+                '0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                '100%': { opacity: '0', transform: 'translateY(20px) scale(0.9)' },
+              },
+            },
+            animation: {
+              'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+              'toast-in': 'toast-in 0.3s ease-out forwards',
+              'toast-out': 'toast-out 0.3s ease-in forwards',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body class="bg-light-bg dark:bg-dark-bg transition-colors duration-300 font-sans">
+    <div id="root"></div>
+  </body>
+</html>
