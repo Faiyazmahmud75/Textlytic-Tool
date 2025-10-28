@@ -57,11 +57,9 @@ const ArticleWordCounter: React.FC = () => {
         const totalCharCountNoSpaces = cleanText.replace(/\s/g, '').length;
         
         const words = cleanText.toLowerCase().match(/\b[a-z']+\b/g) || [];
-        // FIX: The following errors were all caused by incorrect type inference on the `reduce` method.
-        // Using a generic argument on `reduce` was causing a cryptic error.
-        // Casting the initial value `{}` to `Record<string, number>` correctly types the accumulator (`acc`)
-        // and the final result (`wordCounts`), which resolves all downstream type errors.
-        const wordCounts = words.reduce((acc, word) => {
+        // Fix: Explicitly type the accumulator `acc` to ensure correct type inference,
+        // which resolves all downstream type errors.
+        const wordCounts = words.reduce((acc: Record<string, number>, word) => {
             if (!stopWords.has(word) && word.length > 1) {
                 acc[word] = (acc[word] || 0) + 1;
             }
