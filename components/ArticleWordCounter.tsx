@@ -1,4 +1,5 @@
 
+
 import React, { useState, useCallback } from 'react';
 import { AnalysisResult, TopWord } from '../types';
 import { TrashIcon } from './Icons';
@@ -57,7 +58,7 @@ const ArticleWordCounter: React.FC = () => {
         const totalCharCountNoSpaces = cleanText.replace(/\s/g, '').length;
         
         const words = cleanText.toLowerCase().match(/\b[a-z']+\b/g) || [];
-        // Fix: Explicitly type the accumulator `acc` to ensure correct type inference,
+        // Fix: Explicitly typing the accumulator for `reduce` ensures correct type inference,
         // which resolves all downstream type errors.
         const wordCounts = words.reduce((acc: Record<string, number>, word) => {
             if (!stopWords.has(word) && word.length > 1) {
@@ -94,18 +95,30 @@ const ArticleWordCounter: React.FC = () => {
                 if (!url.trim()) {
                     throw new Error('Please enter a valid URL.');
                 }
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                
+                let fullUrl = url.trim();
+                // Ensure URL has a protocol for the proxy
+                if (!/^(?:f|ht)tps?:\/\//i.test(fullUrl)) {
+                    fullUrl = 'https://' + fullUrl;
+                }
+
+                // Switched to another CORS proxy for better reliability
+                const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fullUrl)}`;
+                
                 const response = await fetch(proxyUrl);
+
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch the URL. Status: ${response.status}`);
+                    throw new Error(`Failed to fetch the URL. The server responded with status: ${response.status}`);
                 }
                 const html = await response.text();
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const articleContent = getMainContent(doc);
-                if (!articleContent) {
-                    throw new Error('Could not find the main article content on the page.');
+
+                if (!articleContent || !articleContent.textContent?.trim()) {
+                    throw new Error('Could not find the main article content on the page, or the content appears to be empty.');
                 }
+                
                 const rawText = articleContent.textContent || '';
                 performAnalysis(rawText);
             } else { // 'text'
@@ -115,7 +128,11 @@ const ArticleWordCounter: React.FC = () => {
                 performAnalysis(articleText);
             }
         } catch (e: any) {
-            setError(e.message || 'An unexpected error occurred.');
+            let errorMessage = e.message || 'An unexpected error occurred.';
+            if (e.message.includes('Failed to fetch')) {
+                 errorMessage = 'Failed to fetch the article. This could be a network issue, a problem with the CORS proxy, or the target site may be blocking requests. Please try again later or with a different URL.';
+            }
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -186,7 +203,7 @@ const ArticleWordCounter: React.FC = () => {
                 </button>
             </div>
             
-            {inputType === 'url' && <p className="text-xs text-center text-light-muted dark:text-dark-muted mt-2">Note: This tool may not work for all sites due to CORS security policies.</p>}
+            {inputType === 'url' && <p className="text-xs text-center text-light-muted dark:text-dark-muted mt-2">Note: This tool uses a third-party proxy to fetch articles, which may not work for all websites.</p>}
 
             {error && <div className="mt-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg text-sm animate-fade-in-up">{error}</div>}
 
